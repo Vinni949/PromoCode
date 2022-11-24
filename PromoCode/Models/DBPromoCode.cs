@@ -17,13 +17,8 @@ namespace PromoCode.Models
        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            List<string> s = new List<string>();
-            StreamReader f = new StreamReader("test.txt");
-            while (!f.EndOfStream)
-            {
-                s.Add(f.ReadLine());
-            }
-            optionsBuilder.UseSqlServer(s[2]);
+           
+            optionsBuilder.UseSqlServer("Server = (localdb)\\mssqllocaldb; Database = BdPromoCode; Trusted_Connection = True;");
         }
 
 

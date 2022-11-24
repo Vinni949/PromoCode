@@ -7,7 +7,9 @@ namespace PromoCode.Models
         public int id { get; set; }
         public string name { get; set; }
         public DateTime dataTimeCreated { get; set; }
-        public DateTime activationDate { get; set; }
+        public DateTime? activationDate { get; set; }
         public Boolean activaton { get; set; }
+
+      
     }
 }

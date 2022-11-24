@@ -1,6 +1,14 @@
-﻿@{
+﻿@model IActionResult
+@{
     ViewData["Title"] = "Privacy Policy";
 }
 <h1>@ViewData["Title"]</h1>
-
-<p>Use this page to detail your site's privacy policy.</p>
+<form asp-controller="Home" asp-action="Privacy">
+    <p>
+        Наименование: <input type="text" name="name" value="@ViewBag.Search"/>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<p>
+        @Model
+</p>
