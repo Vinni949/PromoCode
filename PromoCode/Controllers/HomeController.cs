@@ -14,24 +14,31 @@ namespace PromoCode.Controllers
         {
             _logger = logger;
         }
-
-
-        public async Task<IActionResult> Index(string searchString)
+        public IActionResult Index(string searchString)
         {
             if (searchString != null)
             {
-                var code = dBPromoCode.PromoCode.SingleOrDefault(s => s.name == searchString);
-                if (code != null&&code.activaton==false)
+                index(searchString);
+            }
+            return View();
+        }
+        [HttpPost]
+        public string index(string searchString)
+        {
+            var code = dBPromoCode.PromoCode.SingleOrDefault(s => s.name == searchString);
+            if (code != null)
+            {
+                if (code.activaton == false)
                 {
                     code.activationDate = DateTime.Now;
                     code.activaton = true;
-                    return View(code);
+                    dBPromoCode.SaveChanges();
+                    return "Активирован промокод";
                 }
+                return "Промокод активирова ранее!";
             }
-
-            return View();
+            return "Помокода не существует";
         }
-
 
         public IActionResult Privacy(string name)
         {
@@ -45,7 +52,7 @@ namespace PromoCode.Controllers
                 dBPromoCode.SaveChanges();
                 return View(promo);
             }
-            return View();
+            return View(new string("asd"));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

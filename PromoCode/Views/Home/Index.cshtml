@@ -1,11 +1,12 @@
-﻿@model String
+﻿
 @{
     ViewData["Title"] = "Home Page";
 }
 <form asp-controller="Home" asp-action="index">
     <p>
         Наименование: <input type="text" name="SearchString" value="@ViewBag.Search"/>
-        <input type="submit" value="Filter" />
+        <input type="submit" value="Активировать" />
     </p>
 </form>
 
+<p>@Model</p>
