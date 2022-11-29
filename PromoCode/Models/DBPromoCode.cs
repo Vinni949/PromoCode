@@ -14,6 +14,7 @@ namespace PromoCode.Models
 
         }
         public DbSet<PromoCode> PromoCode { get; set; }
+        public DbSet<LoginViewModel> loginViewModels { get; set; }
        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

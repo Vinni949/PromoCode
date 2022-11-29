@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using PromoCode.Models;
 using System;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace PromoCode.Controllers
 {
@@ -10,9 +13,10 @@ namespace PromoCode.Controllers
         public DBPromoCode dBPromoCode=new DBPromoCode();
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,DBPromoCode dBPromoCode)
         {
             _logger = logger;
+            this.dBPromoCode=dBPromoCode;
         }
         public IActionResult Index(string searchString)
         {
@@ -40,6 +44,18 @@ namespace PromoCode.Controllers
             return "Помокода не существует";
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
+        {
+
+            var counterParty = dBPromoCode.loginViewModels.SingleOrDefault(s => s.Login == loginViewModel.Login && s.Password == loginViewModel.Password);
+            if (counterParty != null)
+            {
+                return RedirectToAction(nameof(Privacy));
+            }
+            else
+                return View(loginViewModel);
+        }
         public IActionResult Privacy(string name)
         {
             if (name != null)
@@ -60,5 +76,7 @@ namespace PromoCode.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+      
     }
 }
