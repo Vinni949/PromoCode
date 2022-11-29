@@ -4,7 +4,7 @@ using PromoCode.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DBPromoCode>(options =>
-    options.UseSqlServer("Server = (localdb)\\mssqllocaldb; Database = BdPromoCode; Trusted_Connection = True;"));
+    options.UseSqlServer("workstation id=DbPromoCode.mssql.somee.com;packet size=4096;user id=LLEEVV2020_SQLLogin_1;pwd=682shn3e1p;data source=DbPromoCode.mssql.somee.com;persist security info=False;initial catalog=DbPromoCode"));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
