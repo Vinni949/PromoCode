@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PromoCode.Models;
 using System;
@@ -43,6 +44,10 @@ namespace PromoCode.Controllers
             }
             return "Помокода не существует";
         }
+        public IActionResult Login()
+        {
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
@@ -51,12 +56,23 @@ namespace PromoCode.Controllers
             var counterParty = dBPromoCode.loginViewModels.SingleOrDefault(s => s.Login == loginViewModel.Login && s.Password == loginViewModel.Password);
             if (counterParty != null)
             {
+                await AuthAsync(counterParty.id.ToString());
                 return RedirectToAction(nameof(Privacy));
             }
             else
                 return View(loginViewModel);
         }
-        public IActionResult Privacy(string name)
+     
+        public IActionResult Privacy(int? page)
+        {
+            int pageSize = 20;
+            page = page ?? 0;
+            List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
+            promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==false).Skip(pageSize * page.Value).Take(pageSize).ToList();
+            return View(new PagedList<Models.PromoCode> (page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
+        }
+
+        public IActionResult AddPromo(string name)
         {
             if (name != null)
             {
@@ -68,15 +84,37 @@ namespace PromoCode.Controllers
                 dBPromoCode.SaveChanges();
                 return View(promo);
             }
-            return View(new string("asd"));
+           return RedirectToAction(nameof(Privacy));
         }
+
+        public IActionResult activatedPromo(int? page)
+        {
+            int pageSize = 20;
+            page = page ?? 0;
+            List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
+            promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==true).Skip(pageSize * page.Value).Take(pageSize).ToList();
+            return View(new PagedList<Models.PromoCode>(page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
+        }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        private async Task AuthAsync(string userId)
+        {
+            // создаем один claim
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, userId)
+            };
+            // создаем объект ClaimsIdentity
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            // установка аутентификационных куки
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
 
-      
+        }
+
     }
 }
