@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic.FileIO;
 using PromoCode.Models;
-using System;
 using System.Diagnostics;
+using System.IO;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Web;
 
 namespace PromoCode.Controllers
 {
@@ -72,7 +74,7 @@ namespace PromoCode.Controllers
             return View(new PagedList<Models.PromoCode> (page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
         }
 
-        public IActionResult AddPromo(string name)
+        public void AddPromo(string name)
         {
             if (name != null)
             {
@@ -82,9 +84,7 @@ namespace PromoCode.Controllers
                 promo.activaton = false;
                 dBPromoCode.Add(promo);
                 dBPromoCode.SaveChanges();
-                return View(promo);
             }
-           return RedirectToAction(nameof(Privacy));
         }
 
         public IActionResult activatedPromo(int? page)
@@ -114,6 +114,41 @@ namespace PromoCode.Controllers
             // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
 
+        }
+        [HttpGet]
+        public ActionResult Upload()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFile(IFormFile uploadedFile)
+        {
+            
+            if (uploadedFile != null)
+            {
+                using (TextFieldParser parser = new TextFieldParser(uploadedFile.OpenReadStream()))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(",");
+                    while (!parser.EndOfData)
+                    {
+                        //Processing row
+                        string[] fields = parser.ReadFields();
+                        foreach (string field in fields)
+                        {
+                            var PromoCodeDb = dBPromoCode.PromoCode.SingleOrDefault(s => s.name == field);
+                            if(PromoCodeDb == null)
+                            {
+                                AddPromo(field);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            return RedirectToAction("Index");
         }
 
     }
