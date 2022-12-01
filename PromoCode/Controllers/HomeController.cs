@@ -30,7 +30,7 @@ namespace PromoCode.Controllers
             return View();
         }
         [HttpPost]
-        public string index(string searchString)
+        public IActionResult index(string searchString)
         {
             var code = dBPromoCode.PromoCode.SingleOrDefault(s => s.name == searchString);
             if (code != null)
@@ -40,11 +40,13 @@ namespace PromoCode.Controllers
                     code.activationDate = DateTime.Now;
                     code.activaton = true;
                     dBPromoCode.SaveChanges();
-                    return "Активирован промокод";
+                    ViewData["Message"] = "Активирован промокод";
                 }
-                return "Промокод активирова ранее!";
+                ViewData["Message"] = "Промокод активирова ранее!";
             }
-            return "Помокода не существует";
+            else
+                ViewData["Message"] = "Помокода не существует";
+            return View();
         }
         public IActionResult Login()
         {
