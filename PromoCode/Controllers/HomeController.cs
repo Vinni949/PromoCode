@@ -39,13 +39,22 @@ namespace PromoCode.Controllers
                 {
                     code.activationDate = DateTime.Now;
                     code.activaton = true;
-                    dBPromoCode.SaveChanges();
-                    ViewData["Message"] = "Активирован промокод";
+                    //dBPromoCode.SaveChanges();
+                    ViewData["Message"] = "Промокод "+searchString + "  активирован!";
+                    return View();
+
                 }
-                ViewData["Message"] = "Промокод активирова ранее!";
+                return View();
+
             }
             else
-                ViewData["Message"] = "Помокода не существует";
+            return View();
+        }
+      
+        public IActionResult Exeption(string searchString)
+        {
+           
+             ViewData["Message"] =  searchString ;
             return View();
         }
         public IActionResult Login()
