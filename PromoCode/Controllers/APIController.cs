@@ -57,32 +57,6 @@ namespace PromoCode.Controllers
             return RedirectToAction("Exeption", "Home", new {searchString= exeption});
         }
 
-        // PUT api/<APIController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
-        [HttpGet("loginViewModels")]
-        public IActionResult Delete()
-        {
-            foreach (var i in dBPromoCode.loginViewModels)
-            {
-                dBPromoCode.loginViewModels.Remove(i);
-
-            };
-            dBPromoCode.SaveChanges();
-            return RedirectToAction("Models", "Api");
-        }
-
-        // DELETE api/Models
-        [HttpGet("Models")]
-        public string Delete(int id)
-        {
-            string str = "";
-            foreach (var i in dBPromoCode.loginViewModels)
-            { str += i.id + i.Login + i.Password; };
-            return str;
-        }
     }
 }
