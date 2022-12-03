@@ -63,7 +63,7 @@ namespace PromoCode.Controllers
                 {
                     code.activationDate = DateTime.Now;
                     code.activaton = true;
-                    //dBPromoCode.SaveChanges();
+                    dBPromoCode.SaveChanges();
                     ViewData["Message"] = "Промокод "+searchString + "  активирован!";
                     return View();
 
