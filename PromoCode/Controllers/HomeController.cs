@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
 using PromoCode.Models;
 using System.Diagnostics;
-using System.IO;
-using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Web;
+
 
 namespace PromoCode.Controllers
 {
@@ -21,6 +20,30 @@ namespace PromoCode.Controllers
             _logger = logger;
             this.dBPromoCode=dBPromoCode;
         }
+        public IActionResult Login()
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
+        {
+            List<string> s = new List<string>();
+            StreamReader f = new StreamReader("test.txt");
+            while (!f.EndOfStream)
+            {
+                s.Add(f.ReadLine());
+            }
+
+            if (s[0] == loginViewModel.Login && s[1] == loginViewModel.Password)
+            {
+                await AuthAsync(loginViewModel.Login);
+                return RedirectToAction(nameof(index));
+            }
+            else
+                return View(loginViewModel);
+        }
+        [Authorize]
         public IActionResult Index(string searchString)
         {
             if (searchString != null)
@@ -29,6 +52,7 @@ namespace PromoCode.Controllers
             }
             return View();
         }
+        [Authorize]
         [HttpPost]
         public IActionResult index(string searchString)
         {
@@ -50,32 +74,14 @@ namespace PromoCode.Controllers
             else
             return View();
         }
-      
+        [Authorize]
         public IActionResult Exeption(string searchString)
         {
            
              ViewData["Message"] =  searchString ;
             return View();
         }
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
-        {
-
-            var counterParty = dBPromoCode.loginViewModels.SingleOrDefault(s => s.Login == loginViewModel.Login && s.Password == loginViewModel.Password);
-            if (counterParty != null)
-            {
-                await AuthAsync(counterParty.id.ToString());
-                return RedirectToAction(nameof(Privacy));
-            }
-            else
-                return View(loginViewModel);
-        }
-     
+        [Authorize]
         public IActionResult Privacy(int? page)
         {
             int pageSize = 20;
@@ -84,7 +90,7 @@ namespace PromoCode.Controllers
             promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==false).Skip(pageSize * page.Value).Take(pageSize).ToList();
             return View(new PagedList<Models.PromoCode> (page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
         }
-
+        [Authorize]
         public void AddPromo(string name)
         {
             if (name != null)
@@ -97,7 +103,7 @@ namespace PromoCode.Controllers
                 dBPromoCode.SaveChanges();
             }
         }
-
+        [Authorize]
         public IActionResult activatedPromo(int? page)
         {
             int pageSize = 20;
@@ -106,8 +112,7 @@ namespace PromoCode.Controllers
             promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==true).Skip(pageSize * page.Value).Take(pageSize).ToList();
             return View(new PagedList<Models.PromoCode>(page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
         }
-        
-
+        [Authorize]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -124,14 +129,14 @@ namespace PromoCode.Controllers
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
-
         }
+        [Authorize]
         [HttpGet]
         public ActionResult Upload()
         {
             return View();
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddFile(IFormFile uploadedFile)
         {

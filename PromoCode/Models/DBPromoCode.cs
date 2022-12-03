@@ -18,8 +18,13 @@ namespace PromoCode.Models
        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           
-            optionsBuilder.UseSqlServer("workstation id=DbPromoCode.mssql.somee.com;packet size=4096;user id=LLEEVV2020_SQLLogin_1;pwd=682shn3e1p;data source=DbPromoCode.mssql.somee.com;persist security info=False;initial catalog=DbPromoCode;Encrypt=False;TrustServerCertificate=False;");
+            List<string> s = new List<string>();
+            StreamReader f = new StreamReader("test.txt");
+            while (!f.EndOfStream)
+            {
+                s.Add(f.ReadLine());
+            }
+            optionsBuilder.UseSqlServer(s[2]);
         }
 
 

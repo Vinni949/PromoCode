@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using PromoCode.Models;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,11 +26,13 @@ namespace PromoCode.Controllers
 
         // /api/QRGeneration?sringQR=
         [HttpGet("QRGeneration")]
-        public System.Drawing.Bitmap QRGeneration(string sringQR)
+        public byte[] QRGeneration(string sringQR)
         {
             QRCodeEncoder encoder = new QRCodeEncoder();
             Bitmap qrcode = encoder.Encode(sringQR);
-            return qrcode;
+            ImageConverter _imageConverter = new ImageConverter();
+            byte[] xByte = (byte[])_imageConverter.ConvertTo(qrcode, typeof(byte[]));
+            return xByte;
         }
 
         // /api/RedirectToPage?promo=asdqsd
@@ -58,10 +63,26 @@ namespace PromoCode.Controllers
         {
         }
 
-        // DELETE api/<APIController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpGet("loginViewModels")]
+        public IActionResult Delete()
         {
+            foreach (var i in dBPromoCode.loginViewModels)
+            {
+                dBPromoCode.loginViewModels.Remove(i);
+
+            };
+            dBPromoCode.SaveChanges();
+            return RedirectToAction("Models", "Api");
+        }
+
+        // DELETE api/Models
+        [HttpGet("Models")]
+        public string Delete(int id)
+        {
+            string str = "";
+            foreach (var i in dBPromoCode.loginViewModels)
+            { str += i.id + i.Login + i.Password; };
+            return str;
         }
     }
 }
