@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using PromoCode.Models;
 
@@ -15,7 +16,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         });
 var app = builder.Build();
 
-
+app.UseCors(builder => builder.AllowAnyOrigin());
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
