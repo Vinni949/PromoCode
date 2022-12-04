@@ -26,13 +26,19 @@ namespace PromoCode.Controllers
 
         // /api/QRGeneration?sringQR=
         [HttpGet("QRGeneration")]
-        public byte[] QRGeneration(string sringQR)
+        public string QRGeneration(string sringQR)
         {
             QRCodeEncoder encoder = new QRCodeEncoder();
             Bitmap qrcode = encoder.Encode(sringQR);
             ImageConverter _imageConverter = new ImageConverter();
             byte[] xByte = (byte[])_imageConverter.ConvertTo(qrcode, typeof(byte[]));
-            return xByte;
+
+            string returnString = "";
+            foreach(var x in xByte)
+            {
+                returnString += x;
+            }
+            return "<div class=\"wrapper-qr-code\">" + returnString + "</ div >" ;
         }
 
         // /api/RedirectToPage?promo=asdqsd
