@@ -38,7 +38,7 @@ namespace PromoCode.Controllers
             if (s[0] == loginViewModel.Login && s[1] == loginViewModel.Password)
             {
                 await AuthAsync(loginViewModel.Login);
-                return RedirectToAction(nameof(index));
+                return RedirectToAction(nameof(activatedPromo));
             }
             else
                 return View(loginViewModel);
@@ -63,9 +63,7 @@ namespace PromoCode.Controllers
                 {
                     code.activationDate = DateTime.Now;
                     code.activaton = true;
-                    dBPromoCode.SaveChanges();
-                    ViewData["Message"] = "Промокод "+searchString + "  активирован!";
-                    return View();
+                    return View(code);
 
                 }
                 return View();
@@ -104,8 +102,12 @@ namespace PromoCode.Controllers
             }
         }
         [Authorize]
-        public IActionResult activatedPromo(int? page)
+        public IActionResult activatedPromo(int? page,string? message)
         {
+            if(message!=null)
+            {
+               @ViewData["Message"]=message;
+            }
             int pageSize = 20;
             page = page ?? 0;
             List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
@@ -166,6 +168,22 @@ namespace PromoCode.Controllers
 
             return RedirectToAction("Index");
         }
-        
+        //https://localhost:7232/api/RedirectToPage?promo=QKWZHH7
+        [HttpPost]
+        public IActionResult ActivatedPromo(string name)
+        {
+            var code = dBPromoCode.PromoCode.SingleOrDefault(p => p.name == name);
+            if (code != null)
+            {
+                if (code.activaton == false)
+                {
+                    code.activationDate = DateTime.Now;
+                    code.activaton = true;
+                    dBPromoCode.SaveChanges();
+                    return RedirectToAction("activatedPromo", "Home", new { message = "Промокод: "+ code.name+" активирован!" });
+                }
+            }
+            return View();
+        }
     }
 }

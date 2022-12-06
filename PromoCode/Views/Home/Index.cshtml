@@ -1,6 +1,14 @@
-﻿
+﻿@using PromoCode.Models
+
+@model PromoCode
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<h3>@ViewData["Message"]</h3>
+@if(Model!=null)
+{
+}<form action="ActivatedPromo" method="POST">
+ <input type="text" name="name" value=@Model.name /><br />
+ <input type="submit" value="Активировать" />
+</form> 
+

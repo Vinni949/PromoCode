@@ -4,6 +4,7 @@
 @model PagedList<PromoCode>
 @{
 }
+<h3>@ViewData["Message"]</h3>
 <p>Всего промокодов: @Model.Count</p>
  <form method="post" collor="#FFFFFF" >
 @foreach(var s in Model)
@@ -17,7 +18,7 @@
 
 @if (Model.HasPreviousPage())
 {
-    <a asp-action="Privacy" asp-route-page="@(Model.CurrentPage-1)" asp-route-searchString="@ViewBag.Search">
+    <a asp-action="activatedPromo" asp-route-page="@(Model.CurrentPage-1)" asp-route-searchString="@ViewBag.Search">
         <button>
             назад
         </button>
@@ -25,7 +26,7 @@
 }
 @if (Model.HasNextPage())
 {
-    <a asp-action="Privacy" asp-route-page="@(Model.CurrentPage+1)" asp-route-searchString="@ViewBag.Search">
+    <a asp-action="activatedPromo" asp-route-page="@(Model.CurrentPage+1)" asp-route-searchString="@ViewBag.Search">
         <button>
             вперед
         </button>
