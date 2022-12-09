@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using PromoCode.Models;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -72,8 +73,10 @@ namespace PromoCode.Controllers
         //выдача qr
         public string Extradition()
         {
-            var qr = dBPromoCode.PromoCode.Where(p => p.extradition == false).ToList();
+            DateTime dataTime = DateTime.Now;
+            var qr = dBPromoCode.PromoCode.Where(p => p.extraditionDate <= dataTime.AddHours(-1)||p.extradition==false).ToList();
             qr[0].extradition = true;
+            qr[0].extraditionDate = DateTime.Now;
             dBPromoCode.SaveChanges();
             return qr[0].name;
         }
