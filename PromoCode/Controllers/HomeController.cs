@@ -85,7 +85,7 @@ namespace PromoCode.Controllers
             int pageSize = 20;
             page = page ?? 0;
             List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
-            promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==false).Skip(pageSize * page.Value).Take(pageSize).ToList();
+            promoCodes = dBPromoCode.PromoCode.Where(s=>s.extradition==false).Skip(pageSize * page.Value).Take(pageSize).ToList();
             return View(new PagedList<Models.PromoCode> (page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
         }
         [Authorize]
