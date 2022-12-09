@@ -8,7 +8,7 @@
  <form method="post" collor="#FFFFFF" >
 @foreach(var s in Model)
     {
-        <p>Имя: @s.name Дата выдачи: @s.dataTimeCreated Статус выдачи: @s.extradition Статус активации:@s.activaton </p>
+        <p>Имя: @s.name Дата выдачи: @s.dataTimeCreated Статус активации:@s.activaton Статус выдачи: @s.extradition @s.extraditionDate</p>
     }
     
   
