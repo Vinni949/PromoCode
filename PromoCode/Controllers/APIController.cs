@@ -81,17 +81,18 @@ namespace PromoCode.Controllers
             return qr[0].name;
         }
 
-       /* [HttpGet("AddState")]
+       [HttpGet("AddState")]
         //выдача qr
         public void AddState()
         {
             foreach (var qr in dBPromoCode.PromoCode)
             {
                 qr.extradition = false;
+                qr.extraditionDate = null;
             }
             dBPromoCode.SaveChanges();
             
         }
-       */
+       
     }
 }
