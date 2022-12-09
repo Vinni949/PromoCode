@@ -97,6 +97,7 @@ namespace PromoCode.Controllers
                 promo.name = name;
                 promo.dataTimeCreated = DateTime.Now;
                 promo.activaton = false;
+                promo.extradition = false;
                 dBPromoCode.Add(promo);
                 dBPromoCode.SaveChanges();
             }

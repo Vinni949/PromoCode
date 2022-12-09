@@ -9,7 +9,6 @@ namespace PromoCode.Models
         public DateTime dataTimeCreated { get; set; }
         public DateTime? activationDate { get; set; }
         public Boolean activaton { get; set; }
-
-      
+        public Boolean? extradition { get; set; }
     }
 }

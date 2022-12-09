@@ -50,19 +50,45 @@ namespace PromoCode.Controllers
             var dbCode = dBPromoCode.PromoCode.SingleOrDefault(p => p.name == promo);
             if (dbCode != null)
             {
-                if (dbCode.activaton == false)
+                if (dbCode.extradition == true)
                 {
-                    return RedirectToAction("Index", "Home", new { searchString = promo });
+                    if (dbCode.activaton == false)
+                    {
+                        return RedirectToAction("Index", "Home", new { searchString = promo });
+                    }
+                    else
+                    { exeption = "Промо код: " + promo + " был активирован ранее!" + "\n" + "Дата активации: " + dbCode.activationDate; }
+
                 }
                 else
-                { exeption = "Промо код: " + promo + " был активирован ранее!"+"\n" +"Дата активации: " + dbCode.activationDate; }
+                { exeption = "Промо код: " + promo + " не выдавался"; }
 
             }
             else
             { exeption = "Промо код: " + promo + " не существует!"; }
             return RedirectToAction("Exeption", "Home", new {searchString= exeption});
         }
+        [HttpGet("Extradition")]
+        //выдача qr
+        public string Extradition()
+        {
+            var qr = dBPromoCode.PromoCode.Where(p => p.extradition == false).ToList();
+            qr[0].extradition = true;
+            dBPromoCode.SaveChanges();
+            return qr[0].name;
+        }
 
-
+       /* [HttpGet("AddState")]
+        //выдача qr
+        public void AddState()
+        {
+            foreach (var qr in dBPromoCode.PromoCode)
+            {
+                qr.extradition = false;
+            }
+            dBPromoCode.SaveChanges();
+            
+        }
+       */
     }
 }
