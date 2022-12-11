@@ -74,7 +74,7 @@ namespace PromoCode.Controllers
         public string Extradition()
         {
             DateTime dataTime = DateTime.Now;
-            var qr = dBPromoCode.PromoCode.Where(p => p.extraditionDate <= dataTime.AddHours(-1)||p.extradition==false).ToList();
+            var qr = dBPromoCode.PromoCode.Where(p => p.extraditionDate <= dataTime.AddDays(-7)||p.extradition==false).ToList();
             qr[0].extradition = true;
             qr[0].extraditionDate = DateTime.Now;
             dBPromoCode.SaveChanges();
