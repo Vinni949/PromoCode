@@ -45,7 +45,7 @@ namespace PromoCode.Controllers
         // /api/RedirectToPage?promo=asdqsd
         // /api/RedirectToPage?promo=QK21509
         [HttpGet("RedirectToPage")]
-        public IActionResult Redirect(string promo)
+        public IActionResult Redirect(string promo,string? str)
         {
             string exeption = "";
             var dbCode = dBPromoCode.PromoCode.SingleOrDefault(p => p.name == promo);
