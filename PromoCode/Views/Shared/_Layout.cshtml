@@ -14,7 +14,7 @@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PromoCode</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="activatedPromo">PromoCode</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -35,6 +35,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Exeption"></a>
                         </li>
                         </ul>
+                        <form method="post" asp-controller="Home" asp-action="Logout">
+                            <input type="submit" style="float: right" value="Выход" />
+                        </form>
                 </div>
             </div>
         </nav>
@@ -48,7 +51,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2022 - PromoCode - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+           PromoCode          
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

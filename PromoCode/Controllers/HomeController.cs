@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
 using PromoCode.Models;
@@ -85,7 +86,7 @@ namespace PromoCode.Controllers
             int pageSize = 20;
             page = page ?? 0;
             List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
-            promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==false).Skip(pageSize * page.Value).Take(pageSize).ToList();
+            promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==false).ToList();
             return View(new PagedList<Models.PromoCode> (page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
         }
         [Authorize]
@@ -112,7 +113,7 @@ namespace PromoCode.Controllers
             int pageSize = 20;
             page = page ?? 0;
             List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
-            promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==true).Skip(pageSize * page.Value).Take(pageSize).ToList();
+            promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==true).ToList();
             return View(new PagedList<Models.PromoCode>(page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
         }
         [Authorize]
@@ -167,7 +168,7 @@ namespace PromoCode.Controllers
 
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("activatedPromo");
         }
         //https://localhost:7232/api/RedirectToPage?promo=QKWZHH7
         [HttpPost]
@@ -185,6 +186,12 @@ namespace PromoCode.Controllers
                 }
             }
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Login", "Home");
         }
     }
 }
