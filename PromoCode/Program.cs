@@ -6,12 +6,13 @@ using PromoCode.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DBPromoCode>(options =>
-    options.UseSqlServer("workstation id=DbPromoCode.mssql.somee.com;packet size=4096;user id=LLEEVV2020_SQLLogin_1;pwd=682shn3e1p;data source=DbPromoCode.mssql.somee.com;persist security info=False;initial catalog=DbPromoCode"));
+    options.UseSqlServer("Server=ms-sql-6.in-solve.ru;Database=1gb_base5quest;uid=1gb_rcpsec;pwd=48ac9e62ps;Encrypt=False;TrustServerCertificate=False;"));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options => //CookieAuthenticationOptions
         {
+            options.ExpireTimeSpan = TimeSpan.FromHours(9);
             options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Login");
         });
 var app = builder.Build();
