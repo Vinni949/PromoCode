@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options => //CookieAuthenticationOptions
         {
-            options.ExpireTimeSpan = TimeSpan.FromHours(9);
+            options.ExpireTimeSpan = TimeSpan.FromDays(7);
             options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Login");
         });
 var app = builder.Build();
