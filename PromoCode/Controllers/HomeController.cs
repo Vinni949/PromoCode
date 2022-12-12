@@ -21,7 +21,7 @@ namespace PromoCode.Controllers
             _logger = logger;
             this.dBPromoCode=dBPromoCode;
         }
-        public IActionResult Login()
+        public IActionResult Login(string? str)
         {
 
             return View();
