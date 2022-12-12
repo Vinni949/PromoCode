@@ -21,7 +21,7 @@ namespace PromoCode.Controllers
             _logger = logger;
             this.dBPromoCode=dBPromoCode;
         }
-        public IActionResult Login(string? str)
+        public IActionResult Login()
         {
 
             return View();
@@ -39,6 +39,10 @@ namespace PromoCode.Controllers
             if (s[0] == loginViewModel.Login && s[1] == loginViewModel.Password)
             {
                 await AuthAsync(loginViewModel.Login);
+               /* if (HttpContext.Response.Cookies!=null)
+                {
+
+                }*/
                 return RedirectToAction(nameof(activatedPromo));
             }
             else

@@ -6,6 +6,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Net;
 using static System.Net.Mime.MediaTypeNames;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -47,27 +48,31 @@ namespace PromoCode.Controllers
         [HttpGet("RedirectToPage")]
         public IActionResult Redirect(string promo,string? str)
         {
-            string exeption = "";
-            var dbCode = dBPromoCode.PromoCode.SingleOrDefault(p => p.name == promo);
-            if (dbCode != null)
-            {
-                if (dbCode.extradition == true)
+            /*var auth = HttpContext.User.Identities.ToList();
+            if (auth[0].IsAuthenticated != true)
+            {*/
+                string exeption = "";
+                var dbCode = dBPromoCode.PromoCode.SingleOrDefault(p => p.name == promo);
+                if (dbCode != null)
                 {
-                    if (dbCode.activaton == false)
+                    if (dbCode.extradition == true)
                     {
-                        return RedirectToAction("Index", "Home", new { searchString = promo });
+                        if (dbCode.activaton == false)
+                        {
+                            return RedirectToAction("Index", "Home", new { searchString = promo });
+                        }
+                        else
+                        { exeption = "Промо код: " + promo + " был активирован ранее!" + "\n" + "Дата активации: " + dbCode.activationDate; }
+
                     }
                     else
-                    { exeption = "Промо код: " + promo + " был активирован ранее!" + "\n" + "Дата активации: " + dbCode.activationDate; }
+                    { exeption = "Промо код: " + promo + " не выдавался"; }
 
                 }
                 else
-                { exeption = "Промо код: " + promo + " не выдавался"; }
-
-            }
-            else
-            { exeption = "Промо код: " + promo + " не существует!"; }
-            return RedirectToAction("Exeption", "Home", new {searchString= exeption});
+                { exeption = "Промо код: " + promo + " не существует!"; }
+                return RedirectToAction("Exeption", "Home", new { searchString = exeption });
+            
         }
         [HttpGet("Extradition")]
         //выдача qr
