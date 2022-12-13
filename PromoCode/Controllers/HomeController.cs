@@ -39,9 +39,10 @@ namespace PromoCode.Controllers
             if (s[0] == loginViewModel.Login && s[1] == loginViewModel.Password)
             {
                 await AuthAsync(loginViewModel.Login);
-                if (HttpContext.Session.Keys.Contains("url") != null)
+                var promo = HttpContext.Session.GetString("url");
+                if (promo != null)
                 {
-                    var promo = HttpContext.Session.GetString("url");
+                    
                     return RedirectToAction("Redirect", "api", new { promo = promo });
                 }
                 return RedirectToAction(nameof(activatedPromo));
