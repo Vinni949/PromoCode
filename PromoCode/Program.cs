@@ -12,8 +12,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options => //CookieAuthenticationOptions
         {
-            options.ExpireTimeSpan = TimeSpan.FromDays(7);
             options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Home/Login");
+            options.ExpireTimeSpan = TimeSpan.FromDays(7);
+            options.SlidingExpiration = true;
+
         });
 var app = builder.Build();
 
