@@ -1,13 +1,7 @@
 ﻿using MessagingToolkit.QRCode.Codec;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol;
 using PromoCode.Models;
-using System;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Net;
-using static System.Net.Mime.MediaTypeNames;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -46,11 +40,15 @@ namespace PromoCode.Controllers
         // /api/RedirectToPage?promo=asdqsd
         // /api/RedirectToPage?promo=QK21509
         [HttpGet("RedirectToPage")]
-        public IActionResult Redirect(string promo,string? str)
+        public IActionResult Redirect(string promo, string? str)
         {
-            /*var auth = HttpContext.User.Identities.ToList();
-            if (auth[0].IsAuthenticated != true)
-            {*/
+            if (HttpContext.User.Identity.Name == null)
+            {
+                HttpContext.Session.SetString("url",  promo);
+                return RedirectToAction("login", "Home");
+            }
+            else
+            {
                 string exeption = "";
                 var dbCode = dBPromoCode.PromoCode.SingleOrDefault(p => p.name == promo);
                 if (dbCode != null)
@@ -72,21 +70,24 @@ namespace PromoCode.Controllers
                 else
                 { exeption = "Промо код: " + promo + " не существует!"; }
                 return RedirectToAction("Exeption", "Home", new { searchString = exeption });
-            
+
+            }
+
+
         }
         [HttpGet("Extradition")]
         //выдача qr
         public string Extradition()
         {
             DateTime dataTime = DateTime.Now;
-            var qr = dBPromoCode.PromoCode.Where(p => (p.activaton == false && p.extraditionDate <= dataTime.AddDays(-7)) ||(p.activaton == false && p.extradition==false)).ToList();
+            var qr = dBPromoCode.PromoCode.Where(p => (p.activaton == false && p.extraditionDate <= dataTime.AddDays(-7)) || (p.activaton == false && p.extradition == false)).ToList();
             qr[0].extradition = true;
             qr[0].extraditionDate = DateTime.Now;
             dBPromoCode.SaveChanges();
             return qr[0].name;
         }
 
-       [HttpGet("AddState")]
+        [HttpGet("AddState")]
         //выдача qr
         public void AddState()
         {
@@ -96,8 +97,8 @@ namespace PromoCode.Controllers
                 qr.extraditionDate = null;
             }
             dBPromoCode.SaveChanges();
-            
+
         }
-       
+
     }
 }

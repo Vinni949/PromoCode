@@ -17,6 +17,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             options.SlidingExpiration = true;
 
         });
+builder.Services.AddMemoryCache();
+builder.Services.AddSession();
+
 var app = builder.Build();
 
 app.UseCors(builder => builder.AllowAnyOrigin());
@@ -40,5 +43,5 @@ app.UseAuthorization();     // авторизация
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Login}/{id?}");
-
+app.UseSession();
 app.Run();

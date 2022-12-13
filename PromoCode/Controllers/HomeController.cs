@@ -35,14 +35,15 @@ namespace PromoCode.Controllers
             {
                 s.Add(f.ReadLine());
             }
-
+            
             if (s[0] == loginViewModel.Login && s[1] == loginViewModel.Password)
             {
                 await AuthAsync(loginViewModel.Login);
-               /* if (HttpContext.Response.Cookies!=null)
+                if (HttpContext.Session.Keys.Contains("url") != null)
                 {
-
-                }*/
+                    var promo = HttpContext.Session.GetString("url");
+                    return RedirectToAction("Redirect", "api", new { promo = promo });
+                }
                 return RedirectToAction(nameof(activatedPromo));
             }
             else
