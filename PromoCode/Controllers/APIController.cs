@@ -22,19 +22,29 @@ namespace PromoCode.Controllers
 
         // /api/QRGeneration?sringQR=
         [HttpGet("QRGeneration")]
-        public byte[] QRGeneration(string sringQR)
+        public byte[] QRGeneration(string str, string sringQR)
         {
-            QRCodeEncoder encoder = new QRCodeEncoder();
-            Bitmap qrcode = encoder.Encode(sringQR);
-            ImageConverter _imageConverter = new ImageConverter();
-            byte[] xByte = (byte[])_imageConverter.ConvertTo(qrcode, typeof(byte[]));
-
-            /*string returnString = "";
-            foreach(var x in xByte)
+            //string key = str;
+            string key = '"' + str + '"';
+            string[] promo = sringQR.Split('=');
+            string[] code = promo[1].Split('&');
+            var db = dBPromoCode.PromoCode.SingleOrDefault(p =>p.name == code[0]);
+            if (db.keySessions==key)
             {
-                returnString += x;
-            }*/
-            return xByte;
+                QRCodeEncoder encoder = new QRCodeEncoder();
+                Bitmap qrcode = encoder.Encode(sringQR);
+                ImageConverter _imageConverter = new ImageConverter();
+                byte[] xByte = (byte[])_imageConverter.ConvertTo(qrcode, typeof(byte[]));
+                db.qrString = xByte.ToString();
+                dBPromoCode.SaveChanges();
+                return xByte;
+            }
+            else
+            {
+                byte[] s = System.Text.Encoding.UTF8.GetBytes("Exeption");
+                return s;
+            }
+
         }
 
         // /api/RedirectToPage?promo=asdqsd
@@ -44,7 +54,7 @@ namespace PromoCode.Controllers
         {
             if (HttpContext.User.Identity.Name == null)
             {
-                HttpContext.Session.SetString("url",  promo);
+                HttpContext.Session.SetString("url", promo);
                 return RedirectToAction("login", "Home");
             }
             else
@@ -55,13 +65,19 @@ namespace PromoCode.Controllers
                 {
                     if (dbCode.extradition == true)
                     {
-                        if (dbCode.activaton == false)
+                        if (dbCode.qrString != null)
                         {
-                            return RedirectToAction("Index", "Home", new { searchString = promo });
+                            if (dbCode.activaton == false)
+                            {
+                                return RedirectToAction("Index", "Home", new { searchString = promo });
+                            }
+                            else
+                            { exeption = "Промо код: " + promo + " был активирован ранее!" + "\n" + "Дата активации: " + dbCode.activationDate; }
                         }
                         else
-                        { exeption = "Промо код: " + promo + " был активирован ранее!" + "\n" + "Дата активации: " + dbCode.activationDate; }
-
+                        {
+                            exeption = "Промо код: " + promo + " не оплачен! " ;
+                        }
                     }
                     else
                     { exeption = "Промо код: " + promo + " не выдавался"; }
@@ -75,30 +91,53 @@ namespace PromoCode.Controllers
 
 
         }
+
         [HttpGet("Extradition")]
-        //выдача qr
-        public string Extradition()
+        public string Extradition(string key)
         {
-            DateTime dataTime = DateTime.Now;
-            var qr = dBPromoCode.PromoCode.Where(p => (p.activaton == false && p.extraditionDate <= dataTime.AddDays(-7)) || (p.activaton == false && p.extradition == false)).ToList();
-            qr[0].extradition = true;
-            qr[0].extraditionDate = DateTime.Now;
-            dBPromoCode.SaveChanges();
-            return qr[0].name;
+            var keyses = HttpContext.Session;
+
+            if (key != null && key.Length >= 32)
+            {
+                var keyqr = dBPromoCode.PromoCode.SingleOrDefault(p => p.keySessions == key);
+                if (keyqr == null)
+                {
+                    DateTime dataTime = DateTime.Now;
+                    var qr = dBPromoCode.PromoCode.Where(p =>  p.extradition ==false).ToList();
+                    qr[0].extradition = true;
+                    qr[0].extraditionDate = DateTime.Now;
+                    qr[0].keySessions = key;
+                    dBPromoCode.SaveChanges();
+                    return qr[0].name;
+                }
+                else
+                    return keyqr.name;
+
+            }
+            else
+                return "exeption";
         }
 
-        [HttpGet("AddState")]
-        //выдача qr
-        public void AddState()
+        /*[HttpGet("dell")]
+        public void Dell()
         {
-            foreach (var qr in dBPromoCode.PromoCode)
+           var promoCodes = dBPromoCode.PromoCode.Where(p => p.extradition == false).ToList();
+            foreach(var item in promoCodes)
             {
-                qr.extradition = false;
-                qr.extraditionDate = null;
+                dBPromoCode.PromoCode.Remove(item);
             }
             dBPromoCode.SaveChanges();
+        }*/
 
+        [HttpGet("DellPromo")]
+        public void DellPromo(string name,string key)
+        {
+            if (key == "522Vin")
+            {
+                var promoCodes = dBPromoCode.PromoCode.SingleOrDefault(p => p.name == name);
+                dBPromoCode.PromoCode.Remove(promoCodes);
+                dBPromoCode.SaveChanges();
+            }
         }
-
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
 using PromoCode.Models;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.Security.Claims;
 
 
@@ -87,13 +88,17 @@ namespace PromoCode.Controllers
             return View();
         }
         [Authorize]
-        public IActionResult Privacy(int? page)
+        public IActionResult Privacy()
         {
-            int pageSize = 20;
-            page = page ?? 0;
-            List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
-            promoCodes = dBPromoCode.PromoCode.Where(s=>s.activaton==false).ToList();
-            return View(new PagedList<Models.PromoCode> (page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
+            var promo = dBPromoCode.PromoCode.ToList();
+            AllCodesRemains allCodes = new AllCodesRemains();
+            allCodes.all = promo.Count();
+            allCodes.activated= promo.Where(p => p.activaton == true).Count();
+            allCodes.paidAndInactive=promo.Where(p=>p.qrString!=null&&p.activaton==false).Count();
+            allCodes.issuedAndUnpaid = promo.Where(p => p.qrString == null && p.extradition == true).Count();
+            allCodes.unreleased = promo.Where(p => p.extradition == false).Count();
+            
+            return View(allCodes);
         }
         [Authorize]
         public void AddPromo(string name)
@@ -198,6 +203,38 @@ namespace PromoCode.Controllers
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("Login", "Home");
+        }
+
+        public IActionResult PaidAndInactive(int? page)
+        {
+            int pageSize = 20;
+            page = page ?? 0;
+            List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
+            promoCodes = dBPromoCode.PromoCode.Where(p => p.qrString == null&p.activaton==true).ToList();
+            return View(new PagedList<Models.PromoCode>(page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
+
+        }
+        public IActionResult Inactive(int? page)
+        {
+            int pageSize = 20;
+            page = page ?? 0;
+            DateTime date=DateTime.Now;
+            //date = date.AddDays(-1);
+            List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
+            promoCodes = dBPromoCode.PromoCode.Where(p => p.extradition==false).ToList();
+            return View(new PagedList<Models.PromoCode>(page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
+
+        }
+        public IActionResult Promo(int? page, string name)
+        {
+            int pageSize = 20;
+            page = page ?? 0;
+            DateTime date = DateTime.Now;
+            //date = date.AddDays(-1);
+            List<Models.PromoCode> promoCodes = new List<Models.PromoCode>();
+            promoCodes = dBPromoCode.PromoCode.Where(p => p.name==name).ToList();
+            return View(new PagedList<Models.PromoCode>(page.Value, dBPromoCode.PromoCode.Count(), promoCodes, pageSize));
+
         }
     }
 }

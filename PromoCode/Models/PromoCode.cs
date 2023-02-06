@@ -11,5 +11,7 @@ namespace PromoCode.Models
         public Boolean activaton { get; set; }
         public Boolean? extradition { get; set; }
         public DateTime? extraditionDate { get; set; }
+        public string? keySessions { get; set; }
+        public string? qrString { get; set; }
     }
 }

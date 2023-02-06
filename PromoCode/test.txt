@@ -1,3 +1,3 @@
-TestProjectLogin
-PasswordTestProject
-Server=ms-sql-6.in-solve.ru;Database=1gb_base5quest;uid=1gb_rcpsec;pwd=48ac9e62ps;Encrypt=False;TrustServerCertificate=False;
+X5QuestProject
+PasswordX5Quest
+Server=ms-sql-6.in-solve.ru;Database=1gb_databasex5;uid=1gb_rcpsec;pwd=48ac9e62ps;Encrypt=False;TrustServerCertificate=False;

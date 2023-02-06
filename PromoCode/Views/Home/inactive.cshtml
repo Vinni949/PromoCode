@@ -1,0 +1,13 @@
+﻿@using PromoCode.Models;
+
+
+@model PagedList<PromoCode>
+@{
+}
+<p>Всего промокодов: @Model.Count</p>
+<form method="post" collor="#FFFFFF">
+    @foreach (var s in Model)
+    {
+        <p>Имя: @s.name Дата создания:  @s.dataTimeCreated оплата: @s.qrString статус выдачи: @s.activaton</p>
+    }
+</form>

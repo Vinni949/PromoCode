@@ -6,7 +6,7 @@ using PromoCode.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DBPromoCode>(options =>
-    options.UseSqlServer("Server=ms-sql-6.in-solve.ru;Database=1gb_base5quest;uid=1gb_rcpsec;pwd=48ac9e62ps;Encrypt=False;TrustServerCertificate=False;"));
+    options.UseSqlServer("Server=ms-sql-6.in-solve.ru;Database=1gb_x5basequest;uid=1gb_rcpsec;pwd=48ac9e62ps;Encrypt=False;TrustServerCertificate=False;"));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -18,7 +18,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
         });
 builder.Services.AddMemoryCache();
-builder.Services.AddSession();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".MyApp.Session";
+    options.IdleTimeout = TimeSpan.FromDays(7);
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 

@@ -1,33 +1,16 @@
 ﻿@using PromoCode.Models;
 
 
-@model PagedList<PromoCode>
+@model AllCodesRemains
 @{
 }
-<p>Всего промокодов: @Model.Count</p>
- <form method="post" collor="#FFFFFF" >
-@foreach(var s in Model)
-    {
-        <p>Имя: @s.name Дата выдачи: @s.dataTimeCreated Статус активации:@s.activaton Статус выдачи: @s.extradition @s.extraditionDate</p>
-    }
-    
-  
+<p>Всего промокодов: @Model.all</p>
+</br>
+<p>Активированных: @Model.activated</p>
+</br>
+<p>Оплаченные неактивированные: @Model.paidAndInactive</p>
+</br>
+<p>Выданные неоплаченные: @Model.issuedAndUnpaid</p>
+</br>
+<p>Невыданны: @Model.unreleased</p>
 
-</form>
-
-@if (Model.HasPreviousPage())
-{
-    <a asp-action="Privacy" asp-route-page="@(Model.CurrentPage-1)" asp-route-searchString="@ViewBag.Search">
-        <button>
-            назад
-        </button>
-    </a>
-}
-@if (Model.HasNextPage())
-{
-    <a asp-action="Privacy" asp-route-page="@(Model.CurrentPage+1)" asp-route-searchString="@ViewBag.Search">
-        <button>
-            вперед
-        </button>
-    </a>
-}

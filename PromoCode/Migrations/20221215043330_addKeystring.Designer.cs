@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PromoCode.Models;
 
@@ -11,9 +12,11 @@ using PromoCode.Models;
 namespace PromoCode.Migrations
 {
     [DbContext(typeof(DBPromoCode))]
-    partial class DBPromoCodeModelSnapshot : ModelSnapshot
+    [Migration("20221215043330_addKeystring")]
+    partial class addKeystring
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,9 +77,6 @@ namespace PromoCode.Migrations
 
                     b.Property<string>("name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("qrString")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
